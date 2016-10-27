@@ -1,5 +1,5 @@
 ---
-digital_ocean_api_base_url:       "https://api.digitalocean.com/v2/floating_ips/"
+digital_ocean_api_base_url:       "https://api.digitalocean.com/v2/"
 digital_ocean_api_token:          "{{ enc_do_v2_api_key }}"
 digital_ocean_droplet_id:         ""
 digital_ocean_floating_ip:        ""

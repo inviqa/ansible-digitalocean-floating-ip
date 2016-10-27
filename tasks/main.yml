@@ -1,45 +1,61 @@
 ---
-- name:       check if DO Droplet exists
-  stat:
-    path:     "{{ jumpcloud_agent_config }}"
-  register:   jumpcloud_agent_config_status
-
-- name:       Retrive status of the DO Floating IP
-  stat:
-    path:     "{{ jumpcloud_agent_config }}"
-  register:   do_floating_ip_is_assigned
-
-- name:       Unassign the DO Floating IP
-  comman: >
-  delegate_to: localhost
-  when:       do_floating_ip_is_assigned is true
-  set_fact:   do_floating_ip_is_not_assigned true
-
-- name:       Assign the Floating IP to the give Droplet
-  # command: >
-  #         curl -iq \
-  #                  -d '{
-  #                     "type" : "assign",
-  #                     "droplet_id" : "{{ digital_ocean_droplet_id }}",
-  #                   }' \
-  #                  -X 'PUT' \
-  #                  -H 'Content-Type: application/json' \
-  #                  -H 'Authorization: Bearer {{ digital_ocean_api_token }}' \
-  #                  "{{ digital_ocean_api_base_url }}/{{digital_ocean_floating_ip}}/actions"
-  # 
+- name:       Check if DO Droplet exists
   uri:
-    url: "{{ digital_ocean_api_base_url }}/{{digital_ocean_floating_ip}}/actions"
+    url: "{{ digital_ocean_api_base_url }}/droplets/{{ digital_ocean_droplet_id }}"
     headers:
       Content-Type:   'application/json'
       Authorization:  "Bearer {{digital_ocean_api_token}}"
     body_format:  json
-    body:
-      type: 'assign'
-      droplet_id: "{{ digital_ocean_droplet_id }}"
-    method: PUT
+    method: GET
     follow_redirects: all
     return_content: yes
   delegate_to: localhost
-  register: http_outcome
-  #no_log: True
-  when: do_floating_ip_is_not_assigned is true
+  register:   do_droplet_check_json_response
+
+
+- name:       Check if DO Floating IP exists
+  uri:
+    url: "{{ digital_ocean_api_base_url }}/floating_ips/{{ digital_ocean_floating_ip }}"
+    headers:
+      Content-Type:   'application/json'
+      Authorization:  "Bearer {{digital_ocean_api_token}}"
+    body_format:  json
+    method: GET
+    follow_redirects: all
+    return_content: yes
+  delegate_to: localhost
+  register:   do_floating_ip_json_response
+
+# - name:       Unassign the DO Floating IP
+#   comman: >
+#   delegate_to: localhost
+#   when:       do_floating_ip_is_assigned is true
+#   set_fact:   do_floating_ip_is_not_assigned true
+#
+# - name:       Assign the Floating IP to the give Droplet
+#   # command: >
+#   #         curl -iq \
+#   #                  -d '{
+#   #                     "type" : "assign",
+#   #                     "droplet_id" : "{{ digital_ocean_droplet_id }}",
+#   #                   }' \
+#   #                  -X 'PUT' \
+#   #                  -H 'Content-Type: application/json' \
+#   #                  -H 'Authorization: Bearer {{ digital_ocean_api_token }}' \
+#   #                  "{{ digital_ocean_api_base_url }}/floating_ips/{{digital_ocean_floating_ip}}/actions"
+#   #
+#   uri:
+#     url: "{{ digital_ocean_api_base_url }}/floating_ips/{{digital_ocean_floating_ip}}/actions"
+#     headers:
+#       Content-Type:   'application/json'
+#       Authorization:  "Bearer {{digital_ocean_api_token}}"
+#     body_format:  json
+#     body:
+#       type: 'assign'
+#       droplet_id: "{{ digital_ocean_droplet_id }}"
+#     method: PUT
+#     follow_redirects: all
+#     return_content: yes
+#   delegate_to: localhost
+#   register: http_outcome
+#   when: do_floating_ip_is_not_assigned is true
