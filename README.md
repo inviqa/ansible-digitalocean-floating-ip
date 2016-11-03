@@ -16,15 +16,15 @@ To be retrieved from DigitalOcean portal.
 
 To be stored in an Ansible Vault. It's very high-sensitivity Information.
 
-digital_ocean_droplet_id:         ""
-digital_ocean_floating_ip:        ""
 #### [`digital_ocean_api_base_url`][digital_ocean_api_base_url]
 Default: `'https://api.digitalocean.com/v2/floating_ips/'`
 
 #### [`digital_ocean_droplet_id`][digital_ocean_droplet_id]
-Default: `none`
+Default: `{{ do.droplet.id }}`
+
 #### [`digital_ocean_floating_ip`][digital_ocean_floating_ip]
 Default: `none`
+This is a mandatory variable and is supposed to be set in the host_vars file for the specific host you want to assign the Floating IP to (because a Floating IP can be associated to only one host at time), in this way you can associate multiple Floating IP to distinct Droplets.
 ## Example Playbook
 ----------------
 
@@ -33,16 +33,13 @@ Default: `none`
 - hosts: production
   roles:
      - { role: inviqa.digitalocean-floating-ip, digital_ocean_api_token: 'abcdef012234343' }
+
+- hosts: specific_host_name
   vars:
-    digital_ocean_droplet_id: "123456790"
     digital_ocean_floating_ip: "123.456.678.90"
 ...
 ```
 ## TODO
-- [ implement all the tasks]
-- [ ]
-- [ ]
-- [ ]
 
 ## License
 -------
