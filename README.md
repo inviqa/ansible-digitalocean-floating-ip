@@ -51,7 +51,6 @@ This is a mandatory variable and is supposed to be set in the host_vars file for
 Author Marco Massari Calderone at Inviqa UK Ltd
 
 [github]: https://github.com/inviqa/ansible-digitalocean-floating-ip "Github location of this role"
-#[curl]: https://galaxy.ansible.com/list#/roles/4384
 [digitalocean]: https://digitalocean.com "DigitalOcean website"
 [digital_ocean_api_base_url]: https://github.com/inviqa/ansible-digitalocean-floating-ip/blob/master/defaults/main.yml#L2 "Link to variable on master"
 [digital_ocean_api_token]: https://github.com/inviqa/ansible-digitalocean-floating-ip/blob/master/defaults/main.yml#L3 "Link to variable on master"
