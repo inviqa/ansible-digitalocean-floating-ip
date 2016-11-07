@@ -2,10 +2,6 @@
 ------------
 This role assign an existing [DigitalOcean][digitalocean] Floating IP to an exisisting droplet making use of the DigitalOcean API.
 
-## Requirements
-------------
-[cURL][curl] and NTP should be installed as prerequisites.
-
 ## Role Variables
 ------------
 #### [`digital_ocean_api_token`][digital_ocean_api_token]
