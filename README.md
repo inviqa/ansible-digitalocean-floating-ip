@@ -21,6 +21,15 @@ Default: `{{ do.droplet.id }}`
 #### [`digital_ocean_floating_ip`][digital_ocean_floating_ip]
 Default: `none`
 This is a mandatory variable and is supposed to be set in the host_vars file for the specific host you want to assign the Floating IP to (because a Floating IP can be associated to only one host at time), in this way you can associate multiple Floating IP to distinct Droplets.
+
+#### [`digital_ocean_static_id`][digital_ocean_static_id]
+Default: `{{ ansible_ssh_host | mandatory }}`
+This paramater is necessary and mandatory to be able to set up the proper IPTABLES postrouting statments to SMTP traffic
+
+#### [`digital_ocean_smtp_ports`][digital_ocean_smtp_ports]
+Default: `["25","465","587","2525","2526"]`
+This paramater is necessary and mandatory to be able to set up the proper IPTABLES postrouting statments to SMTP traffic
+
 ## Example Playbook
 ----------------
 
@@ -52,4 +61,6 @@ Author Marco Massari Calderone at Inviqa UK Ltd
 [digital_ocean_api_token]: https://github.com/inviqa/ansible-digitalocean-floating-ip/blob/master/defaults/main.yml#L3 "Link to variable on master"
 [digital_ocean_droplet_id]: https://github.com/inviqa/ansible-digitalocean-floating-ip/blob/master/defaults/main.yml#L4 "Link to variable on master"
 [digital_ocean_floating_ip]: https://github.com/inviqa/ansible-digitalocean-floating-ip/blob/master/defaults/main.yml#L5 "Link to variable on master"
+[digital_ocean_static_id]: https://github.com/inviqa/ansible-digitalocean-floating-ip/blob/master/defaults/main.yml#L6 "Link to variable on master"
+[digital_ocean_smtp_ports]: https://github.com/inviqa/ansible-digitalocean-floating-ip/blob/master/defaults/main.yml#L7 "Link to variable on master"
 [licence]: https://raw.githubusercontent.com/inviqa/ansible-digitalocean-floating-ip/master/LICENSE
