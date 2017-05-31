@@ -1,6 +1,9 @@
 ---
 digital_ocean_api_base_url:       "https://api.digitalocean.com/v2/"
+digital_ocean_metadata_url:       "http://169.254.169.254/metadata/v1/interfaces/public/0/anchor_ipv4/address"
 digital_ocean_api_token:          "{{ enc_do_v2_api_key }}"
 digital_ocean_droplet_id:         "{{ do.droplet.id | mandatory }}"
 digital_ocean_floating_ip:        "{{ mandatory }}"
+digital_ocean_static_id:          "{{ ansible_ssh_host | mandatory }}"
+digital_ocean_smtp_ports:         ["25","465","587","2525","2526"]
 ...
