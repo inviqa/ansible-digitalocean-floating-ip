@@ -1,0 +1,11 @@
+---
+digital_ocean_api_token:          "{{ enc_do_v2_api_key }}"
+digital_ocean_size_id:            "{{ do_size_id | default('512mb') }}"
+digital_ocean_image_id:           "{{ do_image_id | default('centos-7-x64') }}"
+digital_ocean_name:               "{{ hostname }}"
+digital_ocean_region_id:          "{{ do_region_id | default('lon1') }}"
+digital_ocean_unique_name:        "{{ do_unique_name | default('yes') }}"
+digital_ocean_backups_enabled:    "{{ do_backups_enabled | default('yes') }}"
+digital_ocean_private_networking: "{{ do_private_networking | default('yes') }}"
+digital_ocean_ssh_key_ids:        "{{ do_ssh_key_ids }}"
+...

@@ -1,0 +1,24 @@
+---
+
+- hosts: all
+  gather_facts: false
+  vars:
+    test_hostname: "{{ inventory_hostname }}-test-with-ansible"
+    enc_do_v2_api_key: "{{ lookup('env','DIGITAL_OCEAN_API_TOKEN') }}"
+    # jumpcloud_use_sudo: true
+
+  tasks:
+    # - include_role:
+    #     name: ansible-jumpcloud
+    #     tasks_from: remove_registered_systems
+    #
+    - name: Remove DO Droplet.
+      digital_ocean:
+        state: absent
+        command: droplet
+        name: "{{ test_hostname | mandatory }}"
+        api_token: "{{ enc_do_v2_api_key | mandatory }}"
+      delegate_to: localhost
+
+    # - name: Remove Floating IP
+...
