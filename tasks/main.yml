@@ -33,7 +33,7 @@
     can_retrive_anchor_ip_associated_to_this_droplet: false
 
 - set_fact:
-    droplet_id_associated_to_floating_ip : "{{(do_floating_ip_json_response.content|from_json).floating_ip.droplet.id }}"
+    droplet_id_associated_to_floating_ip: "{{(do_floating_ip_json_response.content|from_json).floating_ip.droplet.id }}"
   when: floating_ip_is_assigned
 
 - set_fact:
@@ -120,13 +120,17 @@
   become: yes
   with_items: "{{digital_ocean_smtp_ports}}"
 
+# - name:       Redirect all outgoing traffic to the Floating IP
+#   iptables:
+#     table: nat
+#     chain: POSTROUTING
+#     to_source: "{{anchor_ip_associated_to_droplet}}"
+#     protocol: tcp
+#     jump: SNAT
+#     comment: Redirect all outgoing traffic to the Floating IP
+#   become: yes
+#   when: can_retrive_anchor_ip_associated_to_this_droplet
 - name:       Redirect all outgoing traffic to the Floating IP
-  iptables:
-    table: nat
-    chain: POSTROUTING
-    to_source: "{{anchor_ip_associated_to_droplet}}"
-    protocol: tcp
-    jump: SNAT
-    comment: Redirect all outgoing traffic to the Floating IP
-  become: yes
+  set_fact: firewall_additional_rules="{{ firewall_additional_rules|default([]) + \
+      'iptables -t nat -A POSTROUTING -p tcp -m comment --comment 'Redirect all outgoing traffic to the Floating IP' -j SNAT --to-source {{anchor_ip_associated_to_droplet}}"
   when: can_retrive_anchor_ip_associated_to_this_droplet
