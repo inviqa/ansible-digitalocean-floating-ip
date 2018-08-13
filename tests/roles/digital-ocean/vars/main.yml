@@ -7,5 +7,5 @@ digital_ocean_region_id:          "{{ do_region_id | default('lon1') }}"
 digital_ocean_unique_name:        "{{ do_unique_name | default('yes') }}"
 digital_ocean_backups_enabled:    "{{ do_backups_enabled | default('yes') }}"
 digital_ocean_private_networking: "{{ do_private_networking | default('yes') }}"
-digital_ocean_ssh_key_ids:        "{{ do_ssh_key_ids }}"
+digital_ocean_ssh_key_ids:        "{{ do_ssh_key_ids | mandatory }}"
 ...

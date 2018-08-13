@@ -12,75 +12,11 @@
   delegate_to: localhost
   register:   do_droplet_check_json_response
 
+- import_tasks: assign_existing_floating_ip.yml
+  when:       digital_ocean_floating_ip != ""
 
-- name:       Check if DO Floating IP exists
-  uri:
-    url: "{{ digital_ocean_api_base_url }}/floating_ips/{{digital_ocean_floating_ip}}"
-    headers:
-      Content-Type:   'application/json'
-      Authorization:  "Bearer {{digital_ocean_api_token}}"
-    body_format:  json
-    method: GET
-    follow_redirects: all
-    return_content: yes
-  delegate_to: localhost
-  register:   do_floating_ip_json_response
-
-- set_fact:
-    floating_ip_is_assigned: "{{ not (do_floating_ip_json_response.content|from_json).floating_ip.droplet is none}}"
-    droplet_id_associated_to_floating_ip: ""
-    floating_ip_is_assigned_to_this_droplet: false
-    can_retrive_anchor_ip_associated_to_this_droplet: false
-
-- set_fact:
-    droplet_id_associated_to_floating_ip: "{{(do_floating_ip_json_response.content|from_json).floating_ip.droplet.id }}"
-  when: floating_ip_is_assigned
-
-- set_fact:
-    floating_ip_is_assigned_to_this_droplet: true
-  when: droplet_id_associated_to_floating_ip == digital_ocean_droplet_id
-
-- name:       Unassign the DO Floating IP
-  uri:
-    url: "{{ digital_ocean_api_base_url }}/floating_ips/{{digital_ocean_floating_ip}}/actions"
-    headers:
-      Content-Type:   'application/json'
-      Authorization:  "Bearer {{digital_ocean_api_token}}"
-    body_format:  json
-    body:
-      type: 'unassign'
-    method: POST
-    follow_redirects: all
-    return_content: yes
-    status_code: 200,201
-  delegate_to: localhost
-  register: do_floating_ip_unassign_action_json_response
-  when:  floating_ip_is_assigned and not floating_ip_is_assigned_to_this_droplet
-
-- name: "Giving time to Digital Ocean to process the unassign request"
-  pause: seconds=3
-
-- name:       Assign the Floating IP to the give Droplet
-  uri:
-    url: "{{ digital_ocean_api_base_url }}/floating_ips/{{digital_ocean_floating_ip}}/actions"
-    headers:
-      Content-Type:   'application/json'
-      Authorization:  "Bearer {{digital_ocean_api_token}}"
-    body_format:  json
-    body:
-      type: 'assign'
-      droplet_id: "{{ digital_ocean_droplet_id }}"
-    method: POST
-    follow_redirects: all
-    return_content: yes
-    status_code: 200,201
-  delegate_to: localhost
-  register: do_floating_ip_assign_action_json_response
-  when:  not floating_ip_is_assigned_to_this_droplet
-
-- set_fact:
-    floating_ip_is_assigned_to_this_droplet: true
-  when: droplet_id_associated_to_floating_ip == digital_ocean_droplet_id
+- import_tasks: assign_new_floating_ip.yml
+  when:       digital_ocean_floating_ip == ""
 
 - name:       Retrive DO Droplet Anchor IP
   uri:
@@ -113,7 +49,7 @@
     table: nat
     chain: POSTROUTING
     destination_port: "{{item}}"
-    to_source: "{{ansible_ssh_host}}"
+    to_source: "{{ansible_host}}"
     protocol: tcp
     jump: SNAT
     comment: Make sure that SMTP traffic is coming from the DO Droplet Static IP
@@ -130,7 +66,7 @@
 #     comment: Redirect all outgoing traffic to the Floating IP
 #   become: yes
 #   when: can_retrive_anchor_ip_associated_to_this_droplet
-- name:       Redirect all outgoing traffic to the Floating IP
-  set_fact: firewall_additional_rules="{{ firewall_additional_rules|default([]) + \
-      'iptables -t nat -A POSTROUTING -p tcp -m comment --comment 'Redirect all outgoing traffic to the Floating IP' -j SNAT --to-source {{anchor_ip_associated_to_droplet}}"
-  when: can_retrive_anchor_ip_associated_to_this_droplet
+# - name:       Redirect all outgoing traffic to the Floating IP
+#   set_fact: firewall_additional_rules="{{ firewall_additional_rules|default([]) + \
+#       'iptables -t nat -A POSTROUTING -p tcp -m comment --comment 'Redirect all outgoing traffic to the Floating IP' -j SNAT --to-source {{anchor_ip_associated_to_droplet}}"
+#   when: can_retrive_anchor_ip_associated_to_this_droplet
