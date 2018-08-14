@@ -4,14 +4,16 @@
   connection: local
   gather_facts: false
   vars:
-    enc_do_v2_api_key: "{{ lookup('env','DIGITAL_OCEAN_API_TOKEN') }}"
-    do_backups_enabled: false
+    ansible_python_interpreter: "python"
+    ansible_connection: local
+
   roles:
-  - { role: digital-ocean }
+    - { role: digital-ocean }
 
 - hosts: digital-ocean
   vars:
-    test_hostname: "{{ inventory_hostname }}-test-with-ansible"
+    ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
+    do_test_tag: "test-with-ansible"
     firewall_state: started
     firewall_enabled_at_boot: true
     firewall_allowed_tcp_ports:
@@ -20,16 +22,17 @@
     firewall_additional_rules:
       - 'iptables -A PREROUTING -t nat -p tcp -m tcp --dport 2222 -m comment --comment "Test Rule: Redirect 2222 traffic to port 22" -j REDIRECT --to-ports 22'
 
-  pre_tasks:
-    - name: Update the hostname
-      raw: bash -c "(hostname | grep -x {{ test_hostname }}) || hostname {{ test_hostname }}"
-      register: output
-      changed_when: output.stdout == ""
+  # pre_tasks:
+  #   - name: Update the hostname
+  #     raw: bash -c "(hostname | grep -x {{ hostname }}) || hostname {{ hostname }}"
+  #     register: output
+  #     changed_when: output.stdout == ""
 
   roles:
   - { role: digitalocean-floating-ip}
-  - { role: firewall }
+  # - { role: firewall }
   tasks:
+    - include_tasks: tasks/tag_droplets.yml
     - include_tasks: tasks/test_tasks.yml
 
 
