@@ -32,6 +32,6 @@
     do_account_floating_ip_used: "{{do_account_json_response.json.meta.total}}"
 
 - fail:
-    msg: "You have reached the limit of your Floating IPs allowance"
-  when: do_account_floating_ip_used < do_account_floating_ip_limit
+    msg: "You have reached the limit of your Floating IPs allowance using {{do_account_floating_ip_used}} out of {{do_account_floating_ip_limit}}"
+  when: do_account_floating_ip_used == do_account_floating_ip_limit
 ...

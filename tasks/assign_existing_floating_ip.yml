@@ -13,13 +13,13 @@
   register:   do_floating_ip_json_response
 
 - set_fact:
-    floating_ip_is_assigned: "{{ not (do_floating_ip_json_response.content|from_json).floating_ip.droplet is none}}"
+    floating_ip_is_assigned: "{{ not do_floating_ip_json_response.json.floating_ip.droplet is none}}"
     droplet_id_associated_to_floating_ip: ""
     floating_ip_is_assigned_to_this_droplet: false
     can_retrive_anchor_ip_associated_to_this_droplet: false
 
 - set_fact:
-    droplet_id_associated_to_floating_ip: "{{(do_floating_ip_json_response.content|from_json).floating_ip.droplet.id }}"
+    droplet_id_associated_to_floating_ip: "{{do_floating_ip_json_response.content.json.floating_ip.droplet.id }}"
   when:  floating_ip_is_assigned
 
 - set_fact:
