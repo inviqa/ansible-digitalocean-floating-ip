@@ -1,5 +1,5 @@
 ---
-- name:       Check if DO Droplet exists
+- name: Check if DO Droplet exists
   uri:
     url: "{{ digital_ocean_api_base_url }}/droplets/{{ digital_ocean_droplet_id }}"
     headers:
@@ -12,61 +12,10 @@
   delegate_to: localhost
   register:   do_droplet_check_json_response
 
-- import_tasks: assign_existing_floating_ip.yml
-  when:       digital_ocean_floating_ip != ""
-
 - import_tasks: assign_new_floating_ip.yml
-  when:       digital_ocean_floating_ip == ""
+  when: digital_ocean_floating_ip == ""
 
-- name:       Retrive DO Droplet Anchor IP
-  uri:
-    url: "{{digital_ocean_metadata_url}}"
-    body_format:  raw
-    method: GET
-    follow_redirects: all
-    return_content: yes
-    timeout: 3
-  register:   do_droplet_anchor_ip
-  when:   floating_ip_is_assigned_to_this_droplet
-  retries: 3
-  ignore_errors: true
+- import_tasks: assign_existing_floating_ip.yml
+  when: digital_ocean_floating_ip != ""
 
-- set_fact:
-    can_retrive_anchor_ip_associated_to_this_droplet: true
-    anchor_ip_associated_to_droplet : "{{do_droplet_anchor_ip.content}}"
-  when: not (do_droplet_anchor_ip.content == "" or do_droplet_anchor_ip.content == "not found")
-
-- debug:
-    msg:
-      - "It wasn't possible to retrive the Anchor IP for this Droplet."
-      - "Most probably the Outgoing Traffic is already forwarded to the Floating IP."
-      - "IPTABLES outgoing traffic routing won't be modified"
-      - "(SMTP outgoing traffic routing will still be updated)."
-  when: not can_retrive_anchor_ip_associated_to_this_droplet
-
-- name:       Make sure that SMTP traffic is coming from the DO Droplet Static IP
-  iptables:
-    table: nat
-    chain: POSTROUTING
-    destination_port: "{{item}}"
-    to_source: "{{ansible_host}}"
-    protocol: tcp
-    jump: SNAT
-    comment: Make sure that SMTP traffic is coming from the DO Droplet Static IP
-  become: yes
-  with_items: "{{digital_ocean_smtp_ports}}"
-
-# - name:       Redirect all outgoing traffic to the Floating IP
-#   iptables:
-#     table: nat
-#     chain: POSTROUTING
-#     to_source: "{{anchor_ip_associated_to_droplet}}"
-#     protocol: tcp
-#     jump: SNAT
-#     comment: Redirect all outgoing traffic to the Floating IP
-#   become: yes
-#   when: can_retrive_anchor_ip_associated_to_this_droplet
-# - name:       Redirect all outgoing traffic to the Floating IP
-#   set_fact: firewall_additional_rules="{{ firewall_additional_rules|default([]) + \
-#       'iptables -t nat -A POSTROUTING -p tcp -m comment --comment 'Redirect all outgoing traffic to the Floating IP' -j SNAT --to-source {{anchor_ip_associated_to_droplet}}"
-#   when: can_retrive_anchor_ip_associated_to_this_droplet
+- import_tasks: setup_firewall_rules.yml

@@ -36,6 +36,4 @@
   register: do_droplet_test_tag_json_response
   ignore_errors: true
 
-- debug:
-    msg: "{{ do_droplet_test_tag_json_response }}"
 ...

@@ -18,72 +18,14 @@
   delegate_to: localhost
   register: do_floating_ip_create_new_json_response
 
-- fail:
+- debug:
     msg: "{{ do_floating_ip_create_new_json_response.json.message}}"
   when: do_floating_ip_create_new_json_response.status == 422
 
 - debug:
     msg: "The new Floating IP {{ do_floating_ip_create_new_json_response.json.floating_ip.ip }} has been assigned to the droplet {{ digital_ocean_droplet_id }}"
+  when: do_floating_ip_create_new_json_response.status != 422
 
 - set_fact:
     floating_ip_is_assigned_to_this_droplet: true
-#  when: droplet_id_associated_to_floating_ip == digital_ocean_droplet_id
-
-
-#
-# - set_fact:
-#     floating_ip_is_assigned: "{{ not (do_floating_ip_json_response.content|from_json).floating_ip.droplet is none}}"
-#     droplet_id_associated_to_floating_ip: ""
-#     floating_ip_is_assigned_to_this_droplet: false
-#     can_retrive_anchor_ip_associated_to_this_droplet: false
-#
-# - set_fact:
-#     droplet_id_associated_to_floating_ip: "{{(do_floating_ip_json_response.content|from_json).floating_ip.droplet.id }}"
-#   when:  floating_ip_is_assigned
-#
-# - set_fact:
-#     floating_ip_is_assigned_to_this_droplet: true
-#   when: droplet_id_associated_to_floating_ip == digital_ocean_droplet_id
-#
-# - name:       Unassign the DO Floating IP
-#   uri:
-#     url: "{{ digital_ocean_api_base_url }}/floating_ips/{{digital_ocean_floating_ip}}/actions"
-#     headers:
-#       Content-Type:   'application/json'
-#       Authorization:  "Bearer {{digital_ocean_api_token}}"
-#     body_format:  json
-#     body:
-#       type: 'unassign'
-#     method: POST
-#     follow_redirects: all
-#     return_content: yes
-#     status_code: 200,201
-#   delegate_to: localhost
-#   register: do_floating_ip_unassign_action_json_response
-#   when:  floating_ip_is_assigned and not floating_ip_is_assigned_to_this_droplet
-#
-# - name: "Giving time to Digital Ocean to process the unassign request"
-#   pause: seconds=3
-#
-# - name:       Assign the Floating IP to the given Droplet
-#   uri:
-#     url: "{{ digital_ocean_api_base_url }}/floating_ips/{{digital_ocean_floating_ip}}/actions"
-#     headers:
-#       Content-Type:   'application/json'
-#       Authorization:  "Bearer {{digital_ocean_api_token}}"
-#     body_format:  json
-#     body:
-#       type: 'assign'
-#       droplet_id: "{{ digital_ocean_droplet_id }}"
-#     method: POST
-#     follow_redirects: all
-#     return_content: yes
-#     status_code: 200,201
-#   delegate_to: localhost
-#   register: do_floating_ip_assign_action_json_response
-#   when:  not floating_ip_is_assigned_to_this_droplet
-#
-# - set_fact:
-#     floating_ip_is_assigned_to_this_droplet: true
-#   when: droplet_id_associated_to_floating_ip == digital_ocean_droplet_id
-# ...
+...
