@@ -13,7 +13,7 @@
 - hosts: digital-ocean
   vars:
     ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
-    do_test_tag: "test-with-ansible"
+    do_test_tag: "ANSIBLE-TEST"
     firewall_state: started
     firewall_enabled_at_boot: true
     firewall_allowed_tcp_ports:

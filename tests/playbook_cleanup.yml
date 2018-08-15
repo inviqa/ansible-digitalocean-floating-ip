@@ -2,23 +2,29 @@
 
 - hosts: all
   gather_facts: false
+  vars_files:
+    - roles/digitalocean-floating-ip/defaults/main.yml
   vars:
+    ansible_python_interpreter: "python"
+    ansible_connection: local
     test_hostname: "{{ inventory_hostname }}-test-with-ansible"
-    enc_do_v2_api_key: "{{ lookup('env','DIGITAL_OCEAN_API_TOKEN') }}"
+    do_test_tag: "ANSIBLE-TEST"
     # jumpcloud_use_sudo: true
 
   tasks:
+    - include_tasks: tasks/delete_test_resources.yml
     # - include_role:
     #     name: ansible-jumpcloud
     #     tasks_from: remove_registered_systems
     #
-    - name: Remove DO Droplet.
-      digital_ocean:
-        state: absent
-        command: droplet
-        name: "{{ test_hostname | mandatory }}"
-        api_token: "{{ enc_do_v2_api_key | mandatory }}"
-      delegate_to: localhost
+    # - name: Remove DO Droplet.
+    #   digital_ocean:
+    #     id: "{{ do_droplet_id}}"
+    #     state: absent
+    #     command: droplet
+    #     name: "{{ test_hostname | mandatory }}"
+    #     api_token: "{{ enc_do_v2_api_key | mandatory }}"
+    #   delegate_to: localhost
 
     # - name: Remove Floating IP
 ...

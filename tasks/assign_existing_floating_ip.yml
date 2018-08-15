@@ -7,6 +7,7 @@
       Authorization:  "Bearer {{digital_ocean_api_token}}"
     body_format:  json
     method: GET
+    status_code: 200
     follow_redirects: all
     return_content: yes
   delegate_to: localhost

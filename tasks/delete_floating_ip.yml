@@ -1,1 +1,14 @@
-- name:       Delete a Floating IP
+- name: Delete a Floating IP
+  uri:
+    url: "{{ digital_ocean_api_base_url }}/floating_ips/{{item}}"
+    headers:
+      Content-Type:   'application/json'
+      Authorization:  "Bearer {{digital_ocean_api_token}}"
+    body_format:  json
+    method: DELETE
+    follow_redirects: all
+    return_content: yes
+    status_code: 204
+  delegate_to: localhost
+  register: do_floating_ip_delete_json_response
+  with_items: "{{ do_floating_ips_to_delete }}"
