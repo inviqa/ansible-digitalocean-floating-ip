@@ -34,6 +34,4 @@
   tasks:
     - include_tasks: tasks/tag_droplets.yml
     - include_tasks: tasks/test_tasks.yml
-
-
 ...
