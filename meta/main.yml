@@ -26,12 +26,4 @@ galaxy_info:
   categories:
     - networking
     - high-availability
-
-dependencies:
-  - name: firewall
-    src: geerlingguy.firewall
-    version: 2.4.0
-
-
-
 ...
