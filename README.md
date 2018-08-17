@@ -23,7 +23,7 @@ Default: `none`
 This is a mandatory variable and is supposed to be set in the host_vars file for the specific host you want to assign the Floating IP to (because a Floating IP can be associated to only one host at time), in this way you can associate multiple Floating IP to distinct Droplets.
 
 #### [`digital_ocean_static_id`][digital_ocean_static_id]
-Default: `{{ ansible_ssh_host | mandatory }}`
+Default: `{{ ansible_host | mandatory }}`
 This paramater is necessary and mandatory to be able to set up the proper IPTABLES postrouting statments to SMTP traffic
 
 #### [`digital_ocean_smtp_ports`][digital_ocean_smtp_ports]

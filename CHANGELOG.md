@@ -4,3 +4,4 @@
 - fix issue: when the machine is provisioned and is not possible to retrieve the Anchor IP then the firewall rule for redirecting is not generated therefore it is removed from the new firewall rules set.
 - make use of the `firewall` role to apply the required IPTABLES rules
 - add test tasks
+- add TravisCI integration
