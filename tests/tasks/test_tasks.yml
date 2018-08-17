@@ -21,16 +21,6 @@
   delegate_to: localhost
   no_log: true
 
-- debug:
-    var: do_floating_ips_assigned_to_this_droplet
-
-- name: Check that the droplet has been assigned with a Floating IP
-  assert:
-    that:
-      - "do_floating_ips_assigned_to_this_droplet is defined"
-    msg: "This Droplet wasn't associated to any Floating IP"
-  delegate_to: localhost
-
 - name: Retrive the active IPTABLES rules
   command: iptables-save
   register: iptables_save_content
@@ -42,5 +32,15 @@
       - " item in iptables_save_content.stdout"
     msg: " The rule {{item}} is not in the active IPTABLES"
   with_items: "{{firewall_additional_rules|map('regex_replace','iptables ','')|map('regex_replace','-t nat ','')|map('regex_replace','  ',' ')|list}}"
+  delegate_to: localhost
+
+- debug:
+    var: do_floating_ips_assigned_to_this_droplet
+
+- name: Check that the droplet has been assigned with a Floating IP
+  assert:
+    that:
+      - "do_floating_ips_assigned_to_this_droplet is defined"
+    msg: "This Droplet wasn't associated to any Floating IP"
   delegate_to: localhost
 ...

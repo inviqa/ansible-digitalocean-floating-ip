@@ -3,3 +3,4 @@ test_variables.yml
 .DS_Store
 .galaxy
 *.retry
+.vault_password

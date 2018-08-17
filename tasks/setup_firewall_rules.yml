@@ -1,7 +1,7 @@
 ---
 - import_tasks: check_iptables_is_installed.yml
 
-- name: Save IPTABLES Status to a temporary file
+- name: Save IPTABLES rules to a temporary file
   shell: iptables-save > "{{ digital_ocean_iptables_temp_file }}"
   when: iptables_is_installed
   changed_when: false
@@ -30,7 +30,7 @@
   when: iptables_is_installed
   changed_when: false
 
-- name: Dispose of the IPTABLES Status temporary file
+- name: Dispose of the IPTABLES rules temporary file
   file:
     path: "{{ digital_ocean_iptables_temp_file }}"
     state: absent

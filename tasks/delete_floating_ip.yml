@@ -1,4 +1,4 @@
-- name: Delete a Floating IP
+- name: Delete Floating IPs
   uri:
     url: "{{ digital_ocean_api_base_url }}/floating_ips/{{item}}"
     headers:
