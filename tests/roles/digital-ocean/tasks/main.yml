@@ -24,7 +24,7 @@
 
 - name: Wait for SSH to come up
   delegate_to: localhost
-  wait_for: host={{ ansible_host}} port=22 delay=10 timeout=320 state=started
+  wait_for: host={{ ansible_host}} port=22 delay=15 timeout=320 state=started
 
 - name: Set whether the server has been freshly provisioned
   set_fact:

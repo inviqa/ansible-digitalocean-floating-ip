@@ -3,9 +3,9 @@
   uri:
     url: "{{ digital_ocean_api_base_url }}/tags"
     headers:
-      Content-Type:   'application/json'
-      Authorization:  "Bearer {{digital_ocean_api_token}}"
-    body_format:  json
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
     body:
       name: "{{ do_test_tag }}"
     method: POST
@@ -20,9 +20,9 @@
   uri:
     url: "{{ digital_ocean_api_base_url }}/tags/{{ do_test_tag }}/resources"
     headers:
-      Content-Type:   'application/json'
-      Authorization:  "Bearer {{digital_ocean_api_token}}"
-    body_format:  json
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
     body:
       resources:
         - resource_id: "{{ digital_ocean_droplet_id }}"

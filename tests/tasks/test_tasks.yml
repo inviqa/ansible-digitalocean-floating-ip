@@ -1,58 +1,46 @@
 ---
-
-- include_role:
-    name: ansible-jumpcloud
-    tasks_from: check_system_registration
-
-- name: Check that the host has been added to JumpCloud
-  assert:
-    that:
-      - "jc_system_is_registered"
-    msg: "The host {{jumpcloud_displayName}} has not been registered to Jumpcloud"
-  delegate_to: localhost
-
-- name: Check that the registered host name correspond to the System hostname
-  assert:
-    that:
-      - "jumpcloud_displayName in jc_system_attributes_json_response.json.displayName"
-    msg: "The host should be named {{jumpcloud_displayName}} but is present in JumpCloud as {{jc_system_attributes_json_response.json.displayName}}"
-  when: jc_system_is_registered
-  delegate_to: localhost
-
-- name: Retrieve the list of System Groups the host is member of
+- name: Get The List of All Floating IPs
   uri:
-    url: "{{ jumpcloud_api_v2_url }}/systems/{{ jumpcloud_system_key }}/memberof"
-    method: GET
+    url: "{{ digital_ocean_api_base_url }}/floating_ips?page=1&per_page=100"
     headers:
-      "Content-Type": "application/json"
-      "Accept":       "application/json"
-      "x-api-key":    "{{ jumpcloud_api_key }}"
-    body_format:  json
-    body: '{ "displayName" : "{{ jumpcloud_displayName }}",
-    "allowPublicKeyAuthentication" : "{{ jumpcloud_allowPublicKeyAuthentication }}",
-    "allowSshPasswordAuthentication" : "{{ jumpcloud_allowSshPasswordAuthentication }}",
-    "allowSshRootLogin" : "{{ jumpcloud_allowSshRootLogin }}",
-    "allowMultiFactorAuthentication" : "{{ jumpcloud_allowMultiFactorAuthentication }}" }'
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
+    method: GET
+    status_code: 200
     follow_redirects: all
     return_content: yes
-    status_code: 200
   delegate_to: localhost
-  register: jc_system_memberof_json_response
-  when: jumpcloud_system_key is defined and jumpcloud_system_groups is defined
-  ignore_errors: yes
+  register: do_floating_ips_json_response
+  run_once: true
 
-- set_fact: jc_system_memberof={{ jc_system_memberof|default([]) | union([item.id]) }}
-  with_items: "{{ jc_system_memberof_json_response.json}}"
+- set_fact:
+    do_floating_ips_assigned_to_this_droplet: "{{ item.ip }}"
+  with_items: "{{do_floating_ips_json_response.json.floating_ips}}"
+  when: item.droplet.name == hostname
   delegate_to: localhost
-  when: jumpcloud_system_groups is defined
   no_log: true
 
-- name: Check that the host is member of the required groups
+- debug:
+    var: do_floating_ips_assigned_to_this_droplet
+
+- name: Check that the droplet has been assigned with a Floating IP
   assert:
     that:
-      - "item.id in jc_system_memberof"
-    msg: "The host seems not to be member of the required System Groups {{jumpcloud_system_groups}}"
-  with_items: "{{jc_system_groups}}"
+      - "do_floating_ips_assigned_to_this_droplet is defined"
+    msg: "This Droplet wasn't associated to any Floating IP"
   delegate_to: localhost
-  when: jumpcloud_system_groups is defined
+
+- name: Retrive the active IPTABLES rules
+  command: iptables-save
+  register: iptables_save_content
+  changed_when: false
+
+- name: Verify that the Firewall rules have been added to the IPTABLES
+  assert:
+    that:
+      - " item in iptables_save_content.stdout"
+    msg: " The rule {{item}} is not in the active IPTABLES"
+  with_items: "{{firewall_additional_rules|map('regex_replace','iptables ','')|map('regex_replace','-t nat ','')|map('regex_replace','  ',' ')|list}}"
+  delegate_to: localhost
 ...

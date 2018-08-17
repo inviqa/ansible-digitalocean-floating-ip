@@ -3,14 +3,14 @@
   uri:
     url: "{{ digital_ocean_api_base_url }}/droplets/{{ digital_ocean_droplet_id }}"
     headers:
-      Content-Type:   'application/json'
-      Authorization:  "Bearer {{digital_ocean_api_token}}"
-    body_format:  json
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
     method: GET
     follow_redirects: all
     return_content: yes
   delegate_to: localhost
-  register:   do_droplet_check_json_response
+  register: do_droplet_check_json_response
 
 - import_tasks: assign_new_floating_ip.yml
   when: digital_ocean_floating_ip == ""

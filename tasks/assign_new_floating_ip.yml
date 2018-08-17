@@ -6,9 +6,9 @@
   uri:
     url: "{{ digital_ocean_api_base_url }}/floating_ips/"
     headers:
-      Content-Type:   'application/json'
-      Authorization:  "Bearer {{digital_ocean_api_token}}"
-    body_format:  json
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
     body:
       droplet_id: "{{ digital_ocean_droplet_id }}"
     method: POST

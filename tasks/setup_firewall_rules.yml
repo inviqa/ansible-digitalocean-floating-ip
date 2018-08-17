@@ -14,14 +14,14 @@
 - name: Retrive DO Droplet Anchor IP
   uri:
     url: "{{digital_ocean_metadata_anchor_ipv4_url}}"
-    body_format:  raw
+    body_format: raw
     method: GET
     follow_redirects: all
     return_content: yes
     timeout: 3
     status_code: 200,-1
-  register:   do_droplet_anchor_ip
-  when:   floating_ip_is_assigned_to_this_droplet
+  register: do_droplet_anchor_ip
+  when: floating_ip_is_assigned_to_this_droplet
   retries: 3
   ignore_errors: true
 
@@ -56,13 +56,13 @@
 - name: Create firewall rules to make sure that SMTP traffic is coming from the DO Droplet Static IP
   set_fact:
     firewall_additional_rules:
-      "{{ firewall_additional_rules|default([]) + [\"iptables -t nat -A POSTROUTING -p tcp -m tcp --dport \" + item + \" -j SNAT --to-source \" + ansible_host + \" -m comment --comment 'Make sure that SMTP traffic is coming from the DO Droplet Static IP'\"] }}"
+      "{{ firewall_additional_rules|default([]) + ['iptables -t nat -A POSTROUTING -p tcp -m tcp --dport ' + item + ' -m comment --comment \"Make sure that SMTP traffic is coming from the DO Droplet Static IP\"' + ' -j SNAT --to-source ' + ansible_host] }}"
   with_items: "{{digital_ocean_smtp_ports}}"
 
 - name: Create firewall rules to redirect all outgoing traffic to the Floating IP
   set_fact:
     firewall_additional_rules:
-      "{{ firewall_additional_rules|default([]) + [\"iptables -t nat -A POSTROUTING -p tcp -j SNAT --to-source \" + anchor_ip_associated_to_droplet + \" -m comment --comment 'Redirect all outgoing traffic to the Floating IP'\"] }}"
+      "{{ firewall_additional_rules|default([]) + ['iptables -t nat -A POSTROUTING -p tcp ' + ' -m comment --comment \"Redirect all outgoing traffic to the Floating IP\"' + ' -j SNAT --to-source ' + anchor_ip_associated_to_droplet] }}"
   when: can_retrive_anchor_ip_associated_to_this_droplet
 
 

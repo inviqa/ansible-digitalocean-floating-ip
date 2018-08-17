@@ -3,14 +3,14 @@
   uri:
     url: "{{ digital_ocean_api_base_url }}/account"
     headers:
-      Content-Type:   'application/json'
-      Authorization:  "Bearer {{digital_ocean_api_token}}"
-    body_format:  json
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
     method: GET
     follow_redirects: all
     return_content: yes
   delegate_to: localhost
-  register:   do_account_json_response
+  register: do_account_json_response
   run_once: true
 
 - set_fact:
@@ -21,14 +21,14 @@
   uri:
     url: "{{ digital_ocean_api_base_url }}/floating_ips?page=1&per_page=20"
     headers:
-      Content-Type:   'application/json'
-      Authorization:  "Bearer {{digital_ocean_api_token}}"
-    body_format:  json
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
     method: GET
     follow_redirects: all
     return_content: yes
   delegate_to: localhost
-  register:   do_account_json_response
+  register: do_account_json_response
 
 - set_fact:
     do_account_floating_ip_used: "{{do_account_json_response.json.meta.total}}"

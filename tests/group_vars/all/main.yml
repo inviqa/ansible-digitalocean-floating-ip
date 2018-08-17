@@ -1,7 +1,7 @@
 ---
     hostname: "{{ inventory_hostname }}-test-with-ansible"
     enc_do_v2_api_key: "{{ lookup('env','DIGITAL_OCEAN_API_TOKEN') }}"
-    do_ssh_key_ids:  "975822"
+    do_ssh_key_ids: "975822"
     do_backups_enabled: false
     ansible_user: root
 

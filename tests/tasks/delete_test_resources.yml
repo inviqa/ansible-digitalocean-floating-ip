@@ -1,19 +1,19 @@
 ---
-# Deleting Test FloatingIP
+# Deleting Test Floating IP
 
 - name: Get The List of All Floating IPs
   uri:
     url: "{{ digital_ocean_api_base_url }}/floating_ips?page=1&per_page=100"
     headers:
-      Content-Type:   'application/json'
-      Authorization:  "Bearer {{digital_ocean_api_token}}"
-    body_format:  json
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
     method: GET
     status_code: 200
     follow_redirects: all
     return_content: yes
   delegate_to: localhost
-  register:   do_floating_ips_json_response
+  register: do_floating_ips_json_response
   run_once: true
 
 - set_fact:
@@ -33,15 +33,15 @@
   uri:
     url: "{{ digital_ocean_api_base_url }}/droplets?tag_name={{ do_test_tag }}"
     headers:
-      Content-Type:   'application/json'
-      Authorization:  "Bearer {{digital_ocean_api_token}}"
-    body_format:  json
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
     method: GET
     status_code: 200
     follow_redirects: all
     return_content: yes
   delegate_to: localhost
-  register:   do_droplets_with_test_tag_json_response
+  register: do_droplets_with_test_tag_json_response
   run_once: true
 
 - name: Retrive the ID assigned to the Test Droplet
@@ -56,9 +56,9 @@
   uri:
     url: "{{ digital_ocean_api_base_url }}/droplets/{{droplet_id_with_test_tag}}"
     headers:
-      Content-Type:   'application/json'
-      Authorization:  "Bearer {{digital_ocean_api_token}}"
-    body_format:  json
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
     method: DELETE
     follow_redirects: all
     return_content: yes

@@ -2,9 +2,9 @@
   uri:
     url: "{{ digital_ocean_api_base_url }}/floating_ips/{{item}}"
     headers:
-      Content-Type:   'application/json'
-      Authorization:  "Bearer {{digital_ocean_api_token}}"
-    body_format:  json
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
     method: DELETE
     follow_redirects: all
     return_content: yes
