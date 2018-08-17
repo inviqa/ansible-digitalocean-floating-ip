@@ -1,10 +1,8 @@
 sudo: required
-dist: trusty
+dist: xenial
 language: python
-python:
-  - "2.7"
-services:
-  - docker
+# python:
+#   - "2.7"
 env:
   global:
     - PATH="/usr/bin:$PATH"
