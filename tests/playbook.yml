@@ -12,6 +12,8 @@
 
 - hosts: digital-ocean
   gather_facts: false
+  vars:
+    ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
   tasks:
   - name: Install Python for Ansible requirements
     import_tasks: tasks/install_python.yml
@@ -19,7 +21,7 @@
 
 - hosts: digital-ocean
   vars:
-    ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
+    # ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
     do_test_tag: "ANSIBLE-TEST"
     firewall_state: started
     firewall_enabled_at_boot: true
