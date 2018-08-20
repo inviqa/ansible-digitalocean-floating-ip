@@ -9,12 +9,12 @@ env:
 
 before_install:
   # setup Travis CI private key to interact with Digital Ocean
-  # - mkdir -p "~/.ssh"
-  # - touch "~/.ssh/id_rsa"
-  # - echo $TRAVIS_RSA > ~/.ssh/id_rsa
-  # - chmod 600 ~/.ssh/id_rsa
-    # Ansible doesn't play well with virtualenv
+  - mkdir -p "~/.ssh"
+  - touch "~/.ssh/id_rsa"
+  - echo $TRAVIS_RSA > ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
   - ssh-add ~/.ssh/id_rsa
+    # Ansible doesn't play well with virtualenv
   - deactivate
   - sudo apt-get update -qq
   - sudo apt-get install -y --allow-unauthenticated sshpass software-properties-common python-software-properties
