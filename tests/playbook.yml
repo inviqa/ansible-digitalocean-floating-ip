@@ -6,7 +6,8 @@
   vars:
     ansible_python_interpreter: "python"
     ansible_connection: local
-
+    do_ssh_key_ids: "{{ lookup('env','DIGITAL_OCEAN_SSH_KEY_ID') }}"
+    do_backups_enabled: false
   roles:
     - { role: digital-ocean }
 
@@ -21,7 +22,6 @@
 
 - hosts: digital-ocean
   vars:
-    # ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
     do_test_tag: "ANSIBLE-TEST"
     firewall_state: started
     firewall_enabled_at_boot: true

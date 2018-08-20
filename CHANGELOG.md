@@ -5,3 +5,4 @@
 - make use of the `firewall` role to apply the required IPTABLES rules
 - add test tasks
 - add TravisCI integration
+- make TravisCI can log into the droplet using SSH keys

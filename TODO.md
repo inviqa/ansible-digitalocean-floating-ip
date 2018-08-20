@@ -1,3 +1,2 @@
 - [ ] update the README file
 - [ ] fix metadata for Ansible Galaxy publication
-- [ ] verify how TravisCI can log into the droplet using SSH keys

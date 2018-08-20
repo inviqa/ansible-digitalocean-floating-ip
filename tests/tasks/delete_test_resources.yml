@@ -19,7 +19,7 @@
 - set_fact:
     do_floating_ips_to_delete: "{{ do_floating_ips_to_delete|default([]) + [ item.ip] }}"
   with_items: "{{do_floating_ips_json_response.json.floating_ips}}"
-  when: item.droplet.name == test_hostname
+  when: item.droplet.name == hostname
   delegate_to: localhost
   no_log: True
 
@@ -48,7 +48,7 @@
   set_fact:
     droplet_id_with_test_tag: "{{ item.id }}"
   with_items: "{{do_droplets_with_test_tag_json_response.json.droplets}}"
-  when: item.name == test_hostname
+  when: item.name == hostname
   delegate_to: localhost
   no_log: true
 
