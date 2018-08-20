@@ -19,7 +19,7 @@
   with_items: "{{do_floating_ips_json_response.json.floating_ips}}"
   when: item.droplet.name == hostname
   delegate_to: localhost
-  no_log: true
+  # no_log: true
 
 - name: Retrive the active IPTABLES rules
   command: iptables-save
