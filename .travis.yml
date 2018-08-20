@@ -6,7 +6,6 @@ env:
   - PATH="/usr/bin:$PATH"
 before_install:
   # Cleanup test Droplets if present from spurious testings
-  - ansible-playbook -i tests/inventory tests/playbook_cleanup.yml --connection=local --become
   # setup Travis CI private key to interact with Digital Ocean
   - openssl aes-256-cbc -K $encrypted_51e115170d26_key -iv $encrypted_51e115170d26_iv
     -in travis_rsa.enc -out ~/.ssh/id_rsa -d
@@ -25,6 +24,8 @@ install:
   - sudo pip install dopy
   - ansible --version
   - ansible-galaxy install -v -f -r tests/requirements.yml
+before_script:
+  - ansible-playbook -i tests/inventory tests/playbook_cleanup.yml --connection=local --become
 script:
   - ansible-playbook -i tests/inventory tests/playbook.yml --syntax-check
   - ansible-playbook -i tests/inventory tests/playbook.yml --list-tasks
