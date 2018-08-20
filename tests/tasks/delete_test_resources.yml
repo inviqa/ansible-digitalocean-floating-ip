@@ -28,6 +28,9 @@
     tasks_from: delete_floating_ip
   when: do_floating_ips_to_delete is defined
 
+- pause:
+    prompt: "Waiting a few seconds after the floating IP deleteion before deleting the Droplets"
+    seconds: 10
 # Deleting Test Droplets
 - name: Retrive The List Of Droplets With Test Tag
   uri:
