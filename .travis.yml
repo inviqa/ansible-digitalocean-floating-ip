@@ -14,7 +14,7 @@ before_install:
   # - echo $TRAVIS_RSA > ~/.ssh/id_rsa
   # - chmod 600 ~/.ssh/id_rsa
     # Ansible doesn't play well with virtualenv
-  - ssh-add
+  - ssh-add ~/.ssh/id_rsa
   - deactivate
   - sudo apt-get update -qq
   - sudo apt-get install -y --allow-unauthenticated sshpass software-properties-common python-software-properties
