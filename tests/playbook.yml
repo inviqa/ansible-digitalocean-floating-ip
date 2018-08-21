@@ -36,11 +36,11 @@
   #     raw: bash -c "(hostname | grep -x {{ hostname }}) || hostname {{ hostname }}"
   #     register: output
   #     changed_when: output.stdout == ""
-
+  pre_tasks:
+    - include_tasks: tasks/tag_droplets.yml
   roles:
   - { role: digitalocean-floating-ip}
   - { role: firewall }
   tasks:
-    - include_tasks: tasks/tag_droplets.yml
     - include_tasks: tasks/test_tasks.yml
 ...
