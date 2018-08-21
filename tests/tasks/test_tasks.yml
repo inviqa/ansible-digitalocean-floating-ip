@@ -25,6 +25,7 @@
   command: iptables-save
   register: iptables_save_content
   changed_when: false
+  when: digital_ocean_use_firewall
 
 - name: Verify that the Firewall rules have been added to the IPTABLES
   assert:
@@ -33,6 +34,7 @@
     msg: " The rule {{item}} is not in the active IPTABLES"
   with_items: "{{firewall_additional_rules|map('regex_replace','iptables ','')|map('regex_replace','-t nat ','')|map('regex_replace','  ',' ')|list}}"
   delegate_to: localhost
+  when: digital_ocean_use_firewall
 
 - debug:
     var: do_floating_ips_assigned_to_this_droplet

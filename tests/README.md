@@ -6,7 +6,6 @@ Use Digital Ocean to provision a set of Droplets to which associate Floating IPs
   - Debian Stable
   - Ubuntu 14.04.x
   - Ubuntu 16.04.x
-  - Ubuntu 18.04.x
   - CentOS 6.x (192.168.3.6)
   - CentOS 7.x (192.168.3.5)
 

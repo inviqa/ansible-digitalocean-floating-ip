@@ -22,6 +22,7 @@
   when: item.droplet.name == hostname
   delegate_to: localhost
   no_log: True
+  ignore_errors: true
 
 - include_role:
     name: digitalocean-floating-ip

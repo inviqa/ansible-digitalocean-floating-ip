@@ -1,2 +1,1 @@
-- [ ] update the README file
-- [ ] fix metadata for Ansible Galaxy publication
+- [ ] publish the role to Galaxy

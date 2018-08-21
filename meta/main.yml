@@ -4,7 +4,7 @@ galaxy_info:
   description: "Assign a DigitalOcean (https://digitalocean.com) Floating IP to a Droplet"
   company: "Inviqa UK Ltd"
   license: MIT
-  min_ansible_version: 1.5
+  min_ansible_version: 2.2
   platforms:
     - name: EL
       versions:
