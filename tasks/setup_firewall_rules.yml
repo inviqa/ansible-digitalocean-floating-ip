@@ -1,0 +1,93 @@
+---
+- import_tasks: check_iptables_is_installed.yml
+
+- name: Save IPTABLES rules to a temporary file
+  shell: iptables-save > "{{ digital_ocean_iptables_temp_file }}"
+  when: iptables_is_installed
+  changed_when: false
+
+- name: Flush IPTABLES NAT table to be able to retrive the Anchor IP
+  command: iptables -F -t nat
+  when: iptables_is_installed
+  changed_when: false
+
+- name: Retrive DO Droplet Anchor IP
+  uri:
+    url: "{{digital_ocean_metadata_anchor_ipv4_url}}"
+    body_format: raw
+    method: GET
+    follow_redirects: all
+    return_content: yes
+    timeout: 3
+    status_code: 200,-1
+  register: do_droplet_anchor_ip
+  when: floating_ip_is_assigned_to_this_droplet
+  retries: 3
+  ignore_errors: true
+
+- name: Restore IPTABLES NAT Status from the temporary file
+  command: iptables-restore "{{ digital_ocean_iptables_temp_file }}"
+  when: iptables_is_installed
+  changed_when: false
+
+- name: Dispose of the IPTABLES rules temporary file
+  file:
+    path: "{{ digital_ocean_iptables_temp_file }}"
+    state: absent
+  changed_when: false
+
+- set_fact:
+    can_retrive_anchor_ip_associated_to_this_droplet: false
+    when: do_droplet_anchor_ip.content == "" or do_droplet_anchor_ip.content == "not found"
+
+- set_fact:
+    can_retrive_anchor_ip_associated_to_this_droplet: true
+    anchor_ip_associated_to_droplet : "{{do_droplet_anchor_ip.content}}"
+  when: not (do_droplet_anchor_ip.content == "" or do_droplet_anchor_ip.content == "not found")
+
+- fail:
+    msg:
+      - "It wasn't possible to retrive the Anchor IP for this Droplet."
+      - "Most probably the Outgoing Traffic is already forwarded to the Floating IP."
+      - "IPTABLES outgoing traffic routing won't be modified"
+      - "(SMTP outgoing traffic routing will still be updated)."
+  when: not can_retrive_anchor_ip_associated_to_this_droplet
+
+- name: Create firewall rules to make sure that SMTP traffic is coming from the DO Droplet Static IP
+  set_fact:
+    firewall_additional_rules:
+      "{{ firewall_additional_rules|default([]) + ['iptables -t nat -A POSTROUTING -p tcp -m tcp --dport ' + item + ' -m comment --comment \"Make sure that SMTP traffic is coming from the DO Droplet Static IP\"' + ' -j SNAT --to-source ' + ansible_host] }}"
+  with_items: "{{digital_ocean_smtp_ports}}"
+  when: digital_ocean_use_firewall
+
+- name: Make sure that SMTP traffic is coming from the DO Droplet Static IP via pure IPTABLES
+  iptables:
+    table: nat
+    chain: POSTROUTING
+    destination_port: "{{item}}"
+    to_source: "{{ansible_host}}"
+    protocol: tcp
+    jump: SNAT
+    comment: Make sure that SMTP traffic is coming from the DO Droplet Static IP
+  become: yes
+  with_items: "{{digital_ocean_smtp_ports}}"
+  when: not digital_ocean_use_firewall
+
+- name: Create firewall rules to redirect all outgoing traffic to the Floating IP
+  set_fact:
+    firewall_additional_rules:
+      "{{ firewall_additional_rules|default([]) + ['iptables -t nat -A POSTROUTING -p tcp ' + ' -m comment --comment \"Redirect all outgoing traffic to the Floating IP\"' + ' -j SNAT --to-source ' + anchor_ip_associated_to_droplet] }}"
+  when: digital_ocean_use_firewall and can_retrive_anchor_ip_associated_to_this_droplet
+
+- name: Redirect all outgoing traffic to the Floating IP via pure IPTABLES
+  iptables:
+    table: nat
+    chain: POSTROUTING
+    to_source: "{{anchor_ip_associated_to_droplet}}"
+    protocol: tcp
+    jump: SNAT
+    comment: Redirect all outgoing traffic to the Floating IP
+  become: yes
+  when: not digital_ocean_use_firewall and can_retrive_anchor_ip_associated_to_this_droplet
+
+...

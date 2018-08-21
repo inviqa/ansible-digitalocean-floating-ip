@@ -1,0 +1,6 @@
+---
+    enc_do_v2_api_key: "{{ lookup('env','DIGITAL_OCEAN_API_TOKEN') }}"
+    ansible_user: root
+    hostname: "{{ inventory_hostname }}-test-with-ansible"
+
+...
