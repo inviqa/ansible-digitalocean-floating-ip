@@ -18,10 +18,6 @@ galaxy_info:
         - all
     - name: Ubuntu
       versions:
-        - precise
-        - quantal
-        - raring
-        - saucy
         - trusty
   categories:
     - networking
