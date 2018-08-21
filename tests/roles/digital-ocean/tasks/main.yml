@@ -1,0 +1,35 @@
+---
+- name: Create new Droplet.
+  digital_ocean:
+    state: present
+    command: droplet
+    name: "{{ digital_ocean_name | mandatory }}"
+    backups_enabled: "{{ digital_ocean_backups_enabled | default('yes') }}"
+    private_networking: "{{ digital_ocean_private_networking | default('yes') }}"
+    api_token: "{{ digital_ocean_api_token | mandatory }}"
+    size_id: "{{ digital_ocean_size_id | mandatory }}"
+    image_id: "{{ digital_ocean_image_id | mandatory }}"
+    region_id: "{{ digital_ocean_region_id | mandatory }}"
+    ssh_key_ids: "{{ digital_ocean_ssh_key_ids | mandatory }}"
+    unique_name: "{{ digital_ocean_unique_name | default('yes') }}"
+  delegate_to: localhost
+  register: do
+
+- name: Set the IP to connect.
+  set_fact:
+    ansible_host: "{{ item.ip_address }}"
+  delegate_to: localhost
+  with_items: "{{do.droplet.networks.v4}}"
+  when: item.type == 'public'
+
+- name: Wait for SSH to come up
+  delegate_to: localhost
+  wait_for: host={{ ansible_host}} port=22 delay=15 timeout=320 state=started
+
+- name: Set whether the server has been freshly provisioned
+  set_fact:
+    host_provisioned: true
+  delegate_to: localhost
+  when: do.changed
+
+...

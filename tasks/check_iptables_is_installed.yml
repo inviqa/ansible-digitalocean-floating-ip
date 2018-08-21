@@ -1,0 +1,14 @@
+
+- name: Get `iptables` status
+  shell: type iptables
+  register: iptables_status
+  ignore_errors: true
+  changed_when: false
+
+- name: Check if `iptables` is installed
+  set_fact:
+    iptables_is_installed: "{{ not 'not found' in iptables_status.stdout }}"
+
+- debug:
+    msg: "Warning ==> iptables is not installed"
+  when: not iptables_is_installed

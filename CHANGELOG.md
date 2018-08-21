@@ -1,0 +1,8 @@
+- make the digital_ocean_floating_ip attribute not mandatory
+- if a floating IP is not specified generate a Floating IP on-the-fly and assign it directly to the droplet
+- add a task to delete a floating IP
+- fix issue: when the machine is provisioned and is not possible to retrieve the Anchor IP then the firewall rule for redirecting is not generated therefore it is removed from the new firewall rules set.
+- make use of the `firewall` role to apply the required IPTABLES rules
+- add test tasks
+- add TravisCI integration
+- make TravisCI can log into the droplet using SSH keys

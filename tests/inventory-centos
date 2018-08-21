@@ -1,0 +1,6 @@
+[centos]
+centos7 do_image_id=centos-7-x64
+centos6 do_image_id=centos-6-x64
+
+[digital-ocean:children]
+centos

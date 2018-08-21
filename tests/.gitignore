@@ -1,0 +1,6 @@
+test_variables.yml
+.vagrant
+.DS_Store
+.galaxy
+*.retry
+.vault_password

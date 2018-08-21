@@ -1,0 +1,5 @@
+[debian]
+debian-stable do_image_id=debian-9-x64
+
+[digital-ocean:children]
+debian

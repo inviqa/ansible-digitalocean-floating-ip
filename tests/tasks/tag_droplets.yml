@@ -1,0 +1,39 @@
+---
+- name: Creating Test Tag
+  uri:
+    url: "{{ digital_ocean_api_base_url }}/tags"
+    headers:
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
+    body:
+      name: "{{ do_test_tag }}"
+    method: POST
+    follow_redirects: all
+    return_content: yes
+    status_code: 201,204
+  register: do_test_tag_create_json_response
+  delegate_to: localhost
+  run_once: true
+
+- name: Tagging The Test Droplets With The Test Tag
+  uri:
+    url: "{{ digital_ocean_api_base_url }}/tags/{{ do_test_tag }}/resources"
+    headers:
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
+    body:
+      resources:
+        - resource_id: "{{ digital_ocean_droplet_id }}"
+          resource_type: "droplet"
+       # '[{"resource_id":"{{ digital_ocean_droplet_id }}","resource_type":"droplet"}]'
+    method: POST
+    follow_redirects: all
+    return_content: yes
+    status_code: 204
+  delegate_to: localhost
+  register: do_droplet_test_tag_json_response
+  ignore_errors: true
+
+...
