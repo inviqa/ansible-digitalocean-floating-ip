@@ -1,0 +1,74 @@
+---
+# Deleting Test Floating IP
+
+- name: Get The List of All Floating IPs
+  uri:
+    url: "{{ digital_ocean_api_base_url }}/floating_ips?page=1&per_page=100"
+    headers:
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
+    method: GET
+    status_code: 200
+    follow_redirects: all
+    return_content: yes
+  delegate_to: localhost
+  register: do_floating_ips_json_response
+  run_once: true
+
+- set_fact:
+    do_floating_ips_to_delete: "{{ do_floating_ips_to_delete|default([]) + [ item.ip] }}"
+  with_items: "{{do_floating_ips_json_response.json.floating_ips}}"
+  when: item.droplet.name == hostname
+  delegate_to: localhost
+  no_log: True
+  ignore_errors: true
+
+- include_role:
+    name: digitalocean-floating-ip
+    tasks_from: delete_floating_ip
+  when: do_floating_ips_to_delete is defined
+
+- pause:
+    prompt: "Waiting a few seconds after the floating IP deletion before deleting the Droplets"
+    seconds: 10
+# Deleting Test Droplets
+- name: Retrive The List Of Droplets With Test Tag
+  uri:
+    url: "{{ digital_ocean_api_base_url }}/droplets?tag_name={{ do_test_tag }}"
+    headers:
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
+    method: GET
+    status_code: 200
+    follow_redirects: all
+    return_content: yes
+  delegate_to: localhost
+  register: do_droplets_with_test_tag_json_response
+  run_once: true
+
+- name: Retrive the ID assigned to the Test Droplet
+  set_fact:
+    droplet_id_with_test_tag: "{{ item.id }}"
+  with_items: "{{do_droplets_with_test_tag_json_response.json.droplets}}"
+  when: item.name == hostname
+  delegate_to: localhost
+  no_log: true
+
+- name: Delete the Test Droplet
+  uri:
+    url: "{{ digital_ocean_api_base_url }}/droplets/{{droplet_id_with_test_tag}}"
+    headers:
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
+    method: DELETE
+    follow_redirects: all
+    return_content: yes
+    status_code: 204
+  delegate_to: localhost
+  register: do_floating_ip_delete_json_response
+  when: droplet_id_with_test_tag is defined
+
+...

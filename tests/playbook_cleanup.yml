@@ -1,0 +1,16 @@
+---
+
+- hosts: all
+  gather_facts: false
+  vars_files:
+    - roles/digitalocean-floating-ip/defaults/main.yml
+  vars:
+    ansible_python_interpreter: "python"
+    ansible_connection: local
+    hostname: "{{ inventory_hostname }}-test-with-ansible"
+    enc_do_v2_api_key: "{{ lookup('env','DIGITAL_OCEAN_API_TOKEN') }}"
+    do_test_tag: "ANSIBLE-TEST"
+
+  tasks:
+    - include_tasks: tasks/delete_test_resources.yml
+...

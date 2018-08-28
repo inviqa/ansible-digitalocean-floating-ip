@@ -1,0 +1,48 @@
+---
+- name: Get The List of All Floating IPs
+  uri:
+    url: "{{ digital_ocean_api_base_url }}/floating_ips?page=1&per_page=100"
+    headers:
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
+    method: GET
+    status_code: 200
+    follow_redirects: all
+    return_content: yes
+  delegate_to: localhost
+  register: do_floating_ips_json_response
+  run_once: true
+
+- set_fact:
+    do_floating_ips_assigned_to_this_droplet: "{{ item.ip }}"
+  with_items: "{{do_floating_ips_json_response.json.floating_ips}}"
+  when: item.droplet.name == hostname
+  delegate_to: localhost
+  no_log: true
+
+- name: Retrive the active IPTABLES rules
+  command: iptables-save
+  register: iptables_save_content
+  changed_when: false
+  when: digital_ocean_use_firewall
+
+- name: Verify that the Firewall rules have been added to the IPTABLES
+  assert:
+    that:
+      - " item in iptables_save_content.stdout"
+    msg: " The rule {{item}} is not in the active IPTABLES"
+  with_items: "{{firewall_additional_rules|map('regex_replace','iptables ','')|map('regex_replace','-t nat ','')|map('regex_replace','  ',' ')|list}}"
+  delegate_to: localhost
+  when: digital_ocean_use_firewall
+
+- debug:
+    var: do_floating_ips_assigned_to_this_droplet
+
+- name: Check that the droplet has been assigned with a Floating IP
+  assert:
+    that:
+      - "do_floating_ips_assigned_to_this_droplet is defined"
+    msg: "This Droplet wasn't associated to any Floating IP"
+  delegate_to: localhost
+...

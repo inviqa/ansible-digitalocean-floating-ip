@@ -1,0 +1,39 @@
+---
+- name: Retrive total allowance for a new Floating IP
+  uri:
+    url: "{{ digital_ocean_api_base_url }}/account"
+    headers:
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
+    method: GET
+    follow_redirects: all
+    return_content: yes
+  delegate_to: localhost
+  register: do_account_json_response
+  run_once: true
+
+- set_fact:
+    do_account_floating_ip_limit: "{{do_account_json_response.json.account.floating_ip_limit}}"
+  run_once: true
+  
+- name: Retrive the number of used Floating IP
+  uri:
+    url: "{{ digital_ocean_api_base_url }}/floating_ips?page=1&per_page=20"
+    headers:
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
+    method: GET
+    follow_redirects: all
+    return_content: yes
+  delegate_to: localhost
+  register: do_account_json_response
+
+- set_fact:
+    do_account_floating_ip_used: "{{do_account_json_response.json.meta.total}}"
+
+- fail:
+    msg: "You have reached the limit of your Floating IPs allowance using {{do_account_floating_ip_used}} out of {{do_account_floating_ip_limit}}"
+  when: do_account_floating_ip_used == do_account_floating_ip_limit
+...

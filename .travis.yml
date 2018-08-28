@@ -1,0 +1,42 @@
+sudo: required
+dist: xenial
+language: python
+env:
+  global:
+  - PATH="/usr/bin:$PATH"
+before_install:
+  # Cleanup test Droplets if present from spurious testings
+  # setup Travis CI private key to interact with Digital Ocean
+  - openssl aes-256-cbc -K $encrypted_51e115170d26_key -iv $encrypted_51e115170d26_iv
+    -in travis_rsa.enc -out ~/.ssh/id_rsa -d
+  - chmod 600 ~/.ssh/id_rsa
+  - eval `ssh-agent -s`
+  - ssh-add ~/.ssh/id_rsa
+  # Ansible doesn't play well with virtualenv
+  - deactivate
+  # software-properties-common for ubuntu 14.04
+  # python-software-properties for ubuntu 12.04
+  - sudo apt-get update -qq
+  - sudo apt-get install -y --allow-unauthenticated sshpass software-properties-common
+    python-software-properties
+install:
+  - sudo pip install ansible
+  - sudo pip install dopy
+  - ansible --version
+  - ansible-galaxy install -v -f -r tests/requirements.yml
+before_script:
+  - ansible-playbook -i tests/inventory tests/playbook_cleanup.yml
+script:
+  - ansible-playbook -i tests/inventory tests/playbook.yml --syntax-check
+  - ansible-playbook -i tests/inventory tests/playbook.yml --list-tasks
+  - ansible-playbook -i tests/inventory-debian tests/playbook.yml
+  - 'ansible-playbook -i tests/inventory-debian tests/playbook.yml | grep -q "changed=0.*failed=0" && (echo "Idempotence test: pass" && exit 0) || (echo "Idempotence test: fail" && exit 1)'
+  - ansible-playbook -i tests/inventory-ubuntu tests/playbook.yml
+  - 'ansible-playbook -i tests/inventory-ubuntu tests/playbook.yml | grep -q "changed=0.*failed=0" && (echo "Idempotence test: pass" && exit 0) || (echo "Idempotence test: fail" && exit 1)'
+  - ansible-playbook -i tests/inventory-centos tests/playbook.yml
+  - 'ansible-playbook -i tests/inventory-centos tests/playbook.yml | grep -q "changed=0.*failed=0" && (echo "Idempotence test: pass" && exit 0) || (echo "Idempotence test: fail" && exit 1)'
+after_script:
+  - ansible-playbook -i tests/inventory tests/playbook_cleanup.yml
+
+# notifications:
+#   webhooks: https://galaxy.ansible.com/api/v1/notifications/
