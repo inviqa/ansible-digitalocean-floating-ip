@@ -44,7 +44,7 @@ This parameter is necessary and mandatory to be able to set up the proper `iptab
 
 #### [`digital_ocean_iptables_temp_file`][digital_ocean_iptables_temp_file]
 Default: `"/tmp/iptables.save"`
-This parameter is necessary and mandatory in the process to temporarely disable the `iptables` to obatin the DO Anchor IP and also during the testing process
+This parameter is necessary and mandatory in the process to temporarily disable the `iptables` to obatin the DO Anchor IP and also during the testing process
 
 #### [`digital_ocean_use_firewall`][digital_ocean_use_firewall]
 Default: `true`
