@@ -1,6 +1,6 @@
 # DigitalOcean Role for Ansible to assign Floating IP to droplets
 ------------
-This role assign an existing [DigitalOcean][digitalocean] Floating IP to an exisisting droplet making use of the DigitalOcean API.
+This role assign an existing [DigitalOcean][digitalocean] Floating IP to an existing droplet making use of the DigitalOcean API.
 
 It also sets up `iptables` to:
 - route all traffic through Digital Ocean Anchor IP
@@ -40,11 +40,11 @@ This is a mandatory variable and is supposed to be set in the host_vars file for
 
 #### [`digital_ocean_smtp_ports`][digital_ocean_smtp_ports]
 Default: `["25","465","587","2525","2526"]`
-This parameter is necessary and mandatory to be able to set up the proper `iptables` postrouting statements to SMTP traffic
+This parameter is necessary and mandatory to be able to set up the proper `iptables` post-routing statements to SMTP traffic
 
 #### [`digital_ocean_iptables_temp_file`][digital_ocean_iptables_temp_file]
 Default: `"/tmp/iptables.save"`
-This parameter is necessary and mandatory in the process to temporarily disable the `iptables` to obatin the DO Anchor IP and also during the testing process
+This parameter is necessary and mandatory in the process to temporarily disable the `iptables` to obtain the DO Anchor IP and also during the testing process
 
 #### [`digital_ocean_use_firewall`][digital_ocean_use_firewall]
 Default: `true`

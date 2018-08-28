@@ -23,7 +23,7 @@ The testing process works as follows:
 There are an Ansible Playbook and Inventory configured to spin a bunch of Digital Ocean droplets.
 Ansible will install associate to these Droplets newly created Floating IPs.
 
-At the end of the provisioning Ansible will run a few test-tasks that will verify if the Floating IPs have been generated and associated correctly each one to a different Droplet, including an idempotence test (the privisioning will be run twice on the same containers without rebuilding or restarting them)
+At the end of the provisioning Ansible will run a few test-tasks that will verify if the Floating IPs have been generated and associated correctly each one to a different Droplet, including an idempotence test (the provisioning will be run twice on the same containers without rebuilding or restarting them)
 
 This is the command to start the testing process
 
