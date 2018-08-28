@@ -2,18 +2,18 @@
 ------------
 This role assign an existing [DigitalOcean][digitalocean] Floating IP to an exisisting droplet making use of the DigitalOcean API.
 
-It also sets up IPTABLES to:
+It also sets up `iptables` to:
 - route all traffic through Digital Ocean Anchor IP
 - route all SMTP traffic through the Droplet static IP
 
-The IPTABLES will be by default set up via the `geerlingguy.firewall` Galaxy role.
-You will need to add such `firewall` role to your playbook, which will grant that the IPTABLES rules will be persistent through the lifecycle of your droplet.
+The `iptables` will be by default set up via the `geerlingguy.firewall` Galaxy role.
+You will need to add such `firewall` role to your playbook, which will grant that the `iptables` rules will be persistent through the lifecycle of your droplet.
 
 In case you do not want to make use of the `geerlingguy.firewall` Galaxy role you can disable it setting to false:
 ```
 digital_ocean_use_firewall: false
 ```
-With that the IPTALES will be set as raw IPTABLES via Ansible's core `iptables` module, BUT THEY WONT ?BE PERSISTENT through the Droplet lifecycle (i.e. if the Droplet is restarted you will lose the IPTABLAES rules)
+With that the ``iptables`` will be set as raw `iptables` via Ansible's core `iptables` module, `but they won't be persistent` through the Droplet lifecycle (i.e. if the Droplet is restarted you will lose the `iptables` rules)
 
 ## Role Variables
 ------------
@@ -40,15 +40,15 @@ This is a mandatory variable and is supposed to be set in the host_vars file for
 
 #### [`digital_ocean_smtp_ports`][digital_ocean_smtp_ports]
 Default: `["25","465","587","2525","2526"]`
-This parameter is necessary and mandatory to be able to set up the proper IPTABLES postrouting statments to SMTP traffic
+This parameter is necessary and mandatory to be able to set up the proper `iptables` postrouting statements to SMTP traffic
 
 #### [`digital_ocean_iptables_temp_file`][digital_ocean_iptables_temp_file]
 Default: `"/tmp/iptables.save"`
-This parameter is necessary and mandatory in the process to temporarely disable the IPTABLES to obatin the DO Anchor IP and also during the testing process
+This parameter is necessary and mandatory in the process to temporarely disable the `iptables` to obatin the DO Anchor IP and also during the testing process
 
 #### [`digital_ocean_use_firewall`][digital_ocean_use_firewall]
 Default: `true`
-This parameter is necessary and mandatory to define how the IPTABLES will be used: via a firewall role or via raw IPTABLES
+This parameter is necessary and mandatory to define how the `iptables` will be used: via a firewall role or via raw `iptables`
 
 ## Example Playbook
 ----------------

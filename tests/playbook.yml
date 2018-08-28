@@ -27,11 +27,6 @@
     firewall_enabled_at_boot: true
     firewall_allowed_tcp_ports:
       - "22"
-  # pre_tasks:
-  #   - name: Update the hostname
-  #     raw: bash -c "(hostname | grep -x {{ hostname }}) || hostname {{ hostname }}"
-  #     register: output
-  #     changed_when: output.stdout == ""
   pre_tasks:
     - include_tasks: tasks/tag_droplets.yml
   roles:
