@@ -1,0 +1,18 @@
+---
+- name: Get The List of All Floating IPs
+  uri:
+    url: "{{ digital_ocean_api_base_url }}/floating_ips?page=1&per_page=100"
+    headers:
+      Content-Type: 'application/json'
+      Authorization: "Bearer {{digital_ocean_api_token}}"
+    body_format: json
+    method: GET
+    status_code: 200
+    follow_redirects: all
+    return_content: yes
+    timeout: 60
+  delegate_to: localhost
+  register: do_floating_ips_json_response
+  run_once: true
+
+...
