@@ -10,6 +10,7 @@
     status_code: 200
     follow_redirects: all
     return_content: yes
+    timeout: 60
   delegate_to: localhost
   register: do_floating_ip_json_response
 
@@ -40,6 +41,7 @@
     follow_redirects: all
     return_content: yes
     status_code: 200,201
+    timeout: 60
   delegate_to: localhost
   register: do_floating_ip_unassign_action_json_response
   when: floating_ip_is_assigned and not floating_ip_is_assigned_to_this_droplet
@@ -61,6 +63,7 @@
     follow_redirects: all
     return_content: yes
     status_code: 200,201
+    timeout: 60
   delegate_to: localhost
   register: do_floating_ip_assign_action_json_response
   when: not floating_ip_is_assigned_to_this_droplet

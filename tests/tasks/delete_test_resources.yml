@@ -12,6 +12,7 @@
     status_code: 200
     follow_redirects: all
     return_content: yes
+    timeout: 60
   delegate_to: localhost
   register: do_floating_ips_json_response
   run_once: true
@@ -44,6 +45,7 @@
     status_code: 200
     follow_redirects: all
     return_content: yes
+    timeout: 60
   delegate_to: localhost
   register: do_droplets_with_test_tag_json_response
   run_once: true
@@ -67,6 +69,7 @@
     follow_redirects: all
     return_content: yes
     status_code: 204
+    timeout: 60
   delegate_to: localhost
   register: do_floating_ip_delete_json_response
   when: droplet_id_with_test_tag is defined

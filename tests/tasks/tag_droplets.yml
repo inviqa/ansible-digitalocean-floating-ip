@@ -12,6 +12,7 @@
     follow_redirects: all
     return_content: yes
     status_code: 201,204
+    timeout: 60
   register: do_test_tag_create_json_response
   delegate_to: localhost
   run_once: true
@@ -32,6 +33,7 @@
     follow_redirects: all
     return_content: yes
     status_code: 204
+    timeout: 60
   delegate_to: localhost
   register: do_droplet_test_tag_json_response
   ignore_errors: true

@@ -10,6 +10,7 @@
     status_code: 200
     follow_redirects: all
     return_content: yes
+    timeout: 60
   delegate_to: localhost
   register: do_floating_ips_json_response
   run_once: true
