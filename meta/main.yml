@@ -15,10 +15,11 @@ galaxy_info:
         - 22
     - name: Debian
       versions:
-        - all
+        - stable
     - name: Ubuntu
       versions:
         - trusty
+        - xenial
   categories:
     - networking
     - high-availability

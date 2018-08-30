@@ -15,6 +15,7 @@
     follow_redirects: all
     return_content: yes
     status_code: 200,201,202,422
+    timeout: 60
   delegate_to: localhost
   register: do_floating_ip_create_new_json_response
 

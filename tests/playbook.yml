@@ -3,6 +3,7 @@
 - hosts: digital-ocean
   connection: local
   gather_facts: false
+  serial: 1
   vars:
     ansible_python_interpreter: "python"
     ansible_connection: local
@@ -19,19 +20,23 @@
   - name: Install Python for Ansible requirements
     import_tasks: tasks/install_python.yml
 
-
 - hosts: digital-ocean
-  vars:
-    do_test_tag: "ANSIBLE-TEST"
-    firewall_state: started
-    firewall_enabled_at_boot: true
-    firewall_allowed_tcp_ports:
-      - "22"
   pre_tasks:
     - include_tasks: tasks/tag_droplets.yml
   roles:
   - { role: digitalocean-floating-ip}
+
+- hosts: digital-ocean
+  serial: 1
+  vars:
+    firewall_state: started
+    firewall_enabled_at_boot: true
+    firewall_allowed_tcp_ports:
+      - "22"
+  roles:
   - { role: firewall, when: digital_ocean_use_firewall }
+
+- hosts: digital-ocean
   tasks:
     - include_tasks: tasks/test_tasks.yml
 ...

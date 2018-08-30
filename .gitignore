@@ -1,3 +1,5 @@
 tests/.vagrant
 !.gitignore
 .vault_password
+travis_rsa.pub
+travis_rsa
