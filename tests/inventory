@@ -1,5 +1,5 @@
 [ubuntu]
-ubuntu1804 do_image_id=ubuntu-18-04-x64
+# ubuntu1804 do_image_id=ubuntu-18-04-x64
 ubuntu1604 do_image_id=ubuntu-16-04-x64
 ubuntu1404 do_image_id=ubuntu-14-04-x64
 
