@@ -11,20 +11,7 @@
   when: iptables_is_installed
   changed_when: false
 
-- name: Retrive DO Droplet Anchor IP
-  uri:
-    url: "{{digital_ocean_metadata_anchor_ipv4_url}}"
-    body_format: raw
-    method: GET
-    follow_redirects: all
-    return_content: yes
-    timeout: 3
-    status_code: 200,-1
-    timeout: 60
-  register: do_droplet_anchor_ip
-  when: floating_ip_is_assigned_to_this_droplet
-  retries: 3
-  ignore_errors: true
+- import_tasks: retrieve_anchor_ip.yml
 
 - name: Restore IPTABLES NAT Status from the temporary file
   command: iptables-restore "{{ digital_ocean_iptables_temp_file }}"
