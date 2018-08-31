@@ -5,7 +5,7 @@
   import_role:
     name: digitalocean-floating-ip
     tasks_from: list_floating_ips
-    
+
 - set_fact:
     do_floating_ips_to_delete: "{{ do_floating_ips_to_delete|default([]) + [ item.ip] }}"
   with_items: "{{do_floating_ips_json_response.json.floating_ips}}"
