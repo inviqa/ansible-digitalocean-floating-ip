@@ -1,1 +1,2 @@
 - [ ] publish the role to Galaxy
+- [ ] remove "found a duplicate dict key (timeout)" warning
