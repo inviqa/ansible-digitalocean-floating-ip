@@ -1,0 +1,9 @@
+---
+- name: Save IPTABLES rules to a temporary file
+  shell: iptables-save > "{{ digital_ocean_iptables_temp_file }}"
+  changed_when: false
+
+- name: Flush IPTABLES NAT table to be able to retrive the Anchor IP
+  command: iptables -F -t nat
+  changed_when: false
+...

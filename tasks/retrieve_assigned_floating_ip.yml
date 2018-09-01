@@ -1,0 +1,49 @@
+---
+- import_tasks: check_iptables_is_installed.yml
+
+- import_tasks: flush_iptables.yml
+  when: iptables_is_installed
+
+- name: Verify if a Floating IP is already assigned to the DO Droplet
+  uri:
+    url: "{{digital_ocean_metadata_floating_ip_active_url}}"
+    body_format: raw
+    method: GET
+    follow_redirects: all
+    return_content: yes
+    timeout: 3
+    status_code: 200,-1
+    timeout: 60
+  register: do_floating_ip_is_already_assigned_to_this_droplet
+  retries: 3
+  ignore_errors: true
+
+- set_fact:
+    floating_ip_is_already_assigned_to_this_droplet: "{{ do_floating_ip_is_already_assigned_to_this_droplet.content | bool }}"
+
+- name: Retrieve Floating IP assigned to the DO Droplet
+  uri:
+    url: "{{digital_ocean_metadata_floating_ip_address_url}}"
+    body_format: raw
+    method: GET
+    follow_redirects: all
+    return_content: yes
+    timeout: 3
+    status_code: 200,-1
+    timeout: 60
+  register: floating_ip_assigned_to_this_droplet_address
+  when: floating_ip_is_already_assigned_to_this_droplet
+  retries: 3
+  ignore_errors: true
+
+- set_fact:
+    do_droplet_floating_ip_address: "{{floating_ip_assigned_to_this_droplet_address.content}}"
+  when: floating_ip_is_already_assigned_to_this_droplet
+
+- debug:
+    msg: "The Floating IP {{ do_droplet_floating_ip_address }} was already assigned to the droplet {{ digital_ocean_droplet_id }}"
+  when: floating_ip_is_already_assigned_to_this_droplet and do_droplet_floating_ip_address is defined
+
+- import_tasks: restore_iptables.yml
+  when: iptables_is_installed
+...

@@ -1,6 +1,9 @@
 ---
-# if Firewall rules to route all traffic through the Achor IPi
-# then you need to drop the IPTABLES before being able to retrieve the anchor IP
+- import_tasks: check_iptables_is_installed.yml
+
+- import_tasks: flush_iptables.yml
+  when: iptables_is_installed
+
 - name: Retrieve DO Droplet Anchor IP
   uri:
     url: "{{digital_ocean_metadata_anchor_ipv4_url}}"
@@ -16,4 +19,6 @@
   retries: 3
   ignore_errors: true
 
+- import_tasks: restore_iptables.yml
+  when: iptables_is_installed
 ...
