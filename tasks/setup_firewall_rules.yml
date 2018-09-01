@@ -1,28 +1,5 @@
 ---
-- import_tasks: check_iptables_is_installed.yml
-
-- name: Save IPTABLES rules to a temporary file
-  shell: iptables-save > "{{ digital_ocean_iptables_temp_file }}"
-  when: iptables_is_installed
-  changed_when: false
-
-- name: Flush IPTABLES NAT table to be able to retrive the Anchor IP
-  command: iptables -F -t nat
-  when: iptables_is_installed
-  changed_when: false
-
 - import_tasks: retrieve_anchor_ip.yml
-
-- name: Restore IPTABLES NAT Status from the temporary file
-  command: iptables-restore "{{ digital_ocean_iptables_temp_file }}"
-  when: iptables_is_installed
-  changed_when: false
-
-- name: Dispose of the IPTABLES rules temporary file
-  file:
-    path: "{{ digital_ocean_iptables_temp_file }}"
-    state: absent
-  changed_when: false
 
 - set_fact:
     can_retrive_anchor_ip_associated_to_this_droplet: false

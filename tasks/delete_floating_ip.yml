@@ -10,7 +10,7 @@
     follow_redirects: all
     return_content: yes
     status_code: 204
-    timeout: 60
+    timeout: 120
   delegate_to: localhost
   register: do_floating_ip_delete_json_response
   with_items: "{{ do_floating_ips_to_delete }}"

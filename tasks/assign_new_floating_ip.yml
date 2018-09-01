@@ -2,6 +2,9 @@
 
 - import_tasks: verify_floating_ip_allowance.yml
 
+- name: Verify if a Floating IP is already assigned to this Droplets
+  import_tasks: retrieve_assigned_floating_ip.yml
+
 - name: Create a new Floating IP associated to a Droplet
   uri:
     url: "{{ digital_ocean_api_base_url }}/floating_ips/"
@@ -18,15 +21,13 @@
     timeout: 60
   delegate_to: localhost
   register: do_floating_ip_create_new_json_response
-
-- debug:
-    msg: "{{ do_floating_ip_create_new_json_response.json.message}}"
-  when: do_floating_ip_create_new_json_response.status == 422
+  when: not floating_ip_is_already_assigned_to_this_droplet
 
 - debug:
     msg: "The new Floating IP {{ do_floating_ip_create_new_json_response.json.floating_ip.ip }} has been assigned to the droplet {{ digital_ocean_droplet_id }}"
-  when: do_floating_ip_create_new_json_response.status != 422
+  when: not floating_ip_is_already_assigned_to_this_droplet and do_floating_ip_create_new_json_response.status != 422
 
 - set_fact:
     floating_ip_is_assigned_to_this_droplet: true
+
 ...
