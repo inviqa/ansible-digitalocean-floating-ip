@@ -50,6 +50,10 @@ This parameter is necessary and mandatory in the process to temporarily disable 
 Default: `true`
 This parameter is necessary and mandatory to define how the `iptables` will be used: via a firewall role or via raw `iptables`
 
+#### [`digital_ocean_use_sudo`][digital_ocean_use_sudo]
+Default: `false`
+This parameter is necessary and mandatory to define if the `become` parameter as to be used when managing firewall or iptables. not necessary if setting `ansible_user: root`
+
 ## Example Playbook
 ----------------
 
@@ -87,4 +91,5 @@ https://github.com/inviqa/ansible-digitalocean-floating-ip/blob/master/defaults/
 [digital_ocean_smtp_ports]: https://github.com/inviqa/ansible-digitalocean-floating-ip/blob/master/defaults/main.yml#L7 "Link to variable on master"
 [digital_ocean_iptables_temp_file]: https://github.com/inviqa/ansible-digitalocean-floating-ip/blob/master/defaults/main.yml#L8 "Link to variable on master"
 [digital_ocean_use_firewall]: https://github.com/inviqa/ansible-digitalocean-floating-ip/blob/master/defaults/main.yml#L9 "Link to variable on master"
+[digital_ocean_use_sudo]: https://github.com/inviqa/ansible-digitalocean-floating-ip/blob/master/defaults/main.yml#L10 "Link to variable on master"
 [licence]: https://raw.githubusercontent.com/inviqa/ansible-digitalocean-floating-ip/master/LICENSE
