@@ -4,10 +4,11 @@
   register: iptables_status
   ignore_errors: true
   changed_when: false
+  become: "{{ digital_ocean_use_sudo }}"
 
 - name: Check if `iptables` is installed
   set_fact:
-    iptables_is_installed: "{{ not 'not found' in iptables_status.stdout }}"
+    iptables_is_installed: "{{ not ('not found' in iptables_status.stdout and 'non-zero return code' in iptables_status.msg) }}"
 
 - debug:
     msg: "Warning ==> iptables is not installed"

@@ -4,6 +4,4 @@
     hostname: "{{ inventory_hostname }}-test-with-ansible"
     digital_ocean_use_firewall: true
     do_test_tag: "ANSIBLE-TEST"
-
-
 ...

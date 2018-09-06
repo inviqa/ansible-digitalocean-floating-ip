@@ -23,8 +23,12 @@
   register: do_floating_ip_create_new_json_response
   when: not floating_ip_is_already_assigned_to_this_droplet
 
+- set_fact:
+    do_droplet_floating_ip_address: "{{do_floating_ip_create_new_json_response.json.floating_ip.ip}}"
+  when: not floating_ip_is_already_assigned_to_this_droplet and do_floating_ip_create_new_json_response.status != 422
+
 - debug:
-    msg: "The new Floating IP {{ do_floating_ip_create_new_json_response.json.floating_ip.ip }} has been assigned to the droplet {{ digital_ocean_droplet_id }}"
+    msg: "The new Floating IP {{ do_droplet_floating_ip_address }} has been assigned to the droplet {{ digital_ocean_droplet_id }}"
   when: not floating_ip_is_already_assigned_to_this_droplet and do_floating_ip_create_new_json_response.status != 422
 
 - set_fact:

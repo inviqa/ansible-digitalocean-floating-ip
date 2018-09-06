@@ -2,10 +2,12 @@
 - name: Restore IPTABLES NAT Status from the temporary file
   command: iptables-restore "{{ digital_ocean_iptables_temp_file }}"
   changed_when: false
+  become: "{{ digital_ocean_use_sudo }}"
 
 - name: Dispose of the IPTABLES rules temporary file
   file:
     path: "{{ digital_ocean_iptables_temp_file }}"
     state: absent
   changed_when: false
+  become: "{{ digital_ocean_use_sudo }}"
 ...
