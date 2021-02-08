@@ -1,4 +1,4 @@
-httplib2==0.18.0
+httplib2==0.19.0
 dopy==0.3.7
 pyrax==1.9.7
 boto==2.43
